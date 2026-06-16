@@ -1,0 +1,118 @@
+{
+    "name": "grml.quick.db",
+    "version": "9.1.6",
+    "description": "A community-maintained fork of quick.db: an easy, non-locking, persistent multi-driver key/value wrapper designed to be simple to set up & use",
+    "main": "out/index.js",
+    "types": "out/index.d.ts",
+    "files": [
+        "out"
+    ],
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.0.0",
+        "@commitlint/config-conventional": "^19.0.0",
+        "@eslint/js": "^9.0.0",
+        "@faker-js/faker": "^9.0.0",
+        "@types/better-sqlite3": "^7.6.0",
+        "@types/jest": "^29.0.0",
+        "@types/lodash": "^4.14.178",
+        "@types/node": "^22.0.0",
+        "@types/pg": "^8.6.6",
+        "@types/write-file-atomic": "^4.0.0",
+        "better-sqlite3": "^12.0.0",
+        "cassandra-driver": "^4.7.2",
+        "dotenv": "^16.0.3",
+        "eslint": "^9.0.0",
+        "eslint-config-prettier": "^10.0.0",
+        "git-cliff": "^2.0.0",
+        "jest": "^29.3.1",
+        "lefthook": "^1.5.2",
+        "mongoose": "^8.0.0",
+        "mysql2": "^3.0.0",
+        "pg": "^8.11.0",
+        "prettier": "^3.0.0",
+        "ts-jest": "^29.0.3",
+        "typescript": "^5.9.0",
+        "typescript-eslint": "^8.0.0",
+        "write-file-atomic": "^6.0.0"
+    },
+    "peerDependencies": {
+        "better-sqlite3": "11.x || 12.x",
+        "cassandra-driver": "4.x",
+        "mongoose": "8.x || 9.x",
+        "mysql2": "3.x",
+        "pg": "8.x",
+        "write-file-atomic": "5.x || 6.x"
+    },
+    "peerDependenciesMeta": {
+        "better-sqlite3": {
+            "optional": true
+        },
+        "mongoose": {
+            "optional": true
+        },
+        "mysql2": {
+            "optional": true
+        },
+        "pg": {
+            "optional": true
+        },
+        "write-file-atomic": {
+            "optional": true
+        },
+        "cassandra-driver": {
+            "optional": true
+        }
+    },
+    "dependencies": {
+        "lodash": "^4.17.21"
+    },
+    "exports": {
+        ".": {
+            "default": "./out/index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./*": {
+            "default": "./out/drivers/*.js",
+            "types": "./out/drivers/*.d.ts"
+        }
+    },
+    "scripts": {
+        "test:all": "jest --roots tests --forceExit",
+        "test:integration": "jest --roots tests/integration --forceExit",
+        "test:unit": "jest --roots tests/unit",
+        "test": "npm run test:unit",
+        "lint": "eslint ./src",
+        "prettier": "prettier --write ./src",
+        "prettier:all": "prettier --write ./",
+        "build": "tsc",
+        "clean": "rm -rf ./out",
+        "prepublishOnly": "npm run lint && npm run build",
+        "prepare": "npm run build"
+    },
+    "lint-staged": {
+        "*.ts": "eslint"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/grMLEqomlkkU5Eeinz4brIrOVCUCkJuN/grml.quick.db.git"
+    },
+    "keywords": [
+        "database",
+        "storing",
+        "values",
+        "easy",
+        "quick",
+        "sqlite",
+        "sqlite3",
+        "db"
+    ],
+    "author": "grml.quick.db Contributors",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/grMLEqomlkkU5Eeinz4brIrOVCUCkJuN/grml.quick.db/issues"
+    },
+    "homepage": "https://github.com/grMLEqomlkkU5Eeinz4brIrOVCUCkJuN/grml.quick.db#readme"
+}

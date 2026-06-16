@@ -1,0 +1,17 @@
+*.sqlite
+*.database
+*.logs
+*.glitch-assets
+watch.json
+server.js
+.vscode/
+.vs/
+.github/
+.package-lock.json
+.husky/
+src/
+tests/
+eslint.config.mjs
+.gitignore
+.prettierrc
+babel.config.js
