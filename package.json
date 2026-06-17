@@ -83,6 +83,8 @@
         "test:all": "jest --roots tests --forceExit",
         "test:integration": "jest --roots tests/integration --forceExit",
         "test:unit": "jest --roots tests/unit",
+        "test:bun": "bun test tests/bun/unit",
+        "test:bun:integration": "bun test --env-file=.env.dev tests/bun/integration",
         "test": "npm run test:unit",
         "lint": "eslint ./src",
         "prettier": "prettier --write ./src",
