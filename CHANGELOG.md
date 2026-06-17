@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.8] - 2026-06-17
+
+### Bug Fixes
+
+- Corrected shape for bun results
+
 ## [9.1.7] - 2026-06-17
 
 ### Features
