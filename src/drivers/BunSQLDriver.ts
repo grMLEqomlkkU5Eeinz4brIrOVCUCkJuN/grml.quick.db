@@ -8,7 +8,13 @@ import { IRemoteDriver } from "../interfaces/IRemoteDriver";
  * declared here. `Bun.sql` is resolved lazily at runtime; the Node build never
  * loads it. See https://bun.sh/docs/api/sql for the full API.
  */
-type BunSQLResult = any[] & { count: number };
+type BunSQLResult = any[] & {
+    // Affected-row count for write queries. The property differs by adapter:
+    // Postgres and SQLite populate `count`, while MySQL reports it on
+    // `affectedRows` (and leaves `count` at 0). See {@link affectedRows}.
+    count?: number;
+    affectedRows?: number;
+};
 
 interface BunSQLClient {
     /** Tagged-template query. Interpolations become bound parameters. */
@@ -31,6 +37,28 @@ interface BunSQLConstructor {
  * straight to `new Bun.SQL(...)`.
  */
 export type BunSQLConfig = string | Record<string, unknown>;
+
+/**
+ * Number of rows affected by a write query, normalized across Bun.sql's
+ * adapters. Postgres and SQLite expose the count on `count`, while MySQL leaves
+ * `count` at 0 and reports it under a different property. Rather than guess one
+ * name, this checks every common convention and returns the first positive
+ * value, so a query that genuinely affected no rows still reports 0.
+ */
+function affectedRows(result: BunSQLResult): number {
+    const meta = result as unknown as Record<string, unknown>;
+    for (const key of [
+        "affectedRows",
+        "rowsAffected",
+        "count",
+        "changes",
+        "rowCount",
+    ]) {
+        const value = meta[key];
+        if (typeof value === "number" && value > 0) return value;
+    }
+    return 0;
+}
 
 /**
  * BunSQLDriver
@@ -170,13 +198,13 @@ export class BunSQLDriver implements IRemoteDriver {
     public async deleteAllRows(table: string): Promise<number> {
         this.checkConnection();
         const result = await this.sql!`DELETE FROM ${this.sql!(table)}`;
-        return result.count;
+        return affectedRows(result);
     }
 
     public async deleteRowByKey(table: string, key: string): Promise<number> {
         this.checkConnection();
         const result = await this
             .sql!`DELETE FROM ${this.sql!(table)} WHERE id = ${key}`;
-        return result.count;
+        return affectedRows(result);
     }
 }
