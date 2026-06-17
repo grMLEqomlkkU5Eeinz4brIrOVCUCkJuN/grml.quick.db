@@ -130,3 +130,6 @@ out
 .tool-versions
 integration-database
 docs
+
+# Bun test database artifacts
+bun-test-driver.sqlite*
