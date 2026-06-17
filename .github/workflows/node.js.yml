@@ -87,3 +87,42 @@ jobs:
             - name: Stop databases
               if: always()
               run: docker compose -f docker-compose.yml --env-file .env.dev down -v
+
+    # Unit tests for the Bun-only drivers (BunSqliteDriver, BunSQLDriver).
+    # These exercise bun:sqlite and Bun.sql's in-memory SQLite adapter, so they
+    # need no external services. Runs under the Bun runtime.
+    bun-unit:
+        name: bun unit (${{ matrix.os }})
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest, macos-latest]
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+            - run: bun install --ignore-scripts
+            - run: bun run test:bun
+
+    # Integration tests for BunSQLDriver against real Postgres and MySQL,
+    # driven by Bun.sql. Linux-only, like the Node integration job, because the
+    # database service containers require docker compose.
+    bun-integration:
+        name: bun integration
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Start databases
+              run: docker compose -f docker-compose.yml --env-file .env.dev up -d
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+            - run: bun install --ignore-scripts
+            - run: bun run test:bun:integration
+            - name: Stop databases
+              if: always()
+              run: docker compose -f docker-compose.yml --env-file .env.dev down -v
