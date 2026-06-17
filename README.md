@@ -27,8 +27,11 @@ Each driver depends on its own database client, which you install separately. On
 | Driver         | Install                       |
 | -------------- | ----------------------------- |
 | SQLite         | `npm i better-sqlite3`        |
+| SQLite (Bun)   | (built into Bun, no install)  |
 | MySQL          | `npm i mysql2`                |
+| MySQL (Bun)    | (built into Bun, no install)  |
 | Postgres       | `npm i pg`                    |
+| Postgres (Bun) | (built into Bun, no install)  |
 | MongoDB        | `npm i mongoose`              |
 | Cassandra      | `npm i cassandra-driver`      |
 | JSON           | `npm i write-file-atomic`     |
@@ -94,6 +97,48 @@ const db = new QuickDB(); // creates json.sqlite in the project root
 ## Drivers
 
 Every driver exposes the same `QuickDB` API. You only change how the driver is constructed. Each driver is imported from a subpath of the package.
+
+### SQLite on Bun
+
+If you run your app with [Bun](https://bun.sh) instead of Node, use `BunSqliteDriver`. It is backed by Bun's built-in [`bun:sqlite`](https://bun.sh/docs/api/sqlite) module, so it needs **no native compilation**, so there is nothing to `npm i`, and no `better-sqlite3` build step. It is a drop-in replacement for the default SQLite driver and stores data in the same `(ID, json)` table layout, so existing `.sqlite` files remain compatible.
+
+```js
+// Run with: bun run index.ts
+const { QuickDB } = require("grml.quick.db");
+const { BunSqliteDriver } = require("grml.quick.db/BunSqliteDriver");
+
+const db = new QuickDB({ driver: new BunSqliteDriver("data.sqlite") });
+
+await db.init();
+await db.set("test", "Hello World");
+console.log(await db.get("test"));
+```
+
+> `BunSqliteDriver` only works under the Bun runtime. When executed under Node it throws a clear error directing you to the default `SqliteDriver`. Conversely, the default `SqliteDriver` (better-sqlite3) also works under Bun if you prefer it, `BunSqliteDriver` is the zero-dependency option.
+
+### Postgres & MySQL on Bun
+
+`BunSQLDriver` is backed by Bun's built-in SQL client ([`Bun.sql`](https://bun.sh/docs/api/sql)), which speaks Postgres, MySQL/MariaDB, and SQLite through a single client. Under Bun it replaces both `PostgresDriver` (`pg`) and `MySQLDriver` (`mysql2`) with **no external client to install**. Pass a connection string or an options object straight through to the client.
+
+```js
+// Run with: bun run index.ts
+const { QuickDB } = require("grml.quick.db");
+const { BunSQLDriver } = require("grml.quick.db/BunSQLDriver");
+
+// Postgres
+const driver = new BunSQLDriver("postgres://user:pass@localhost:5432/mydb");
+// MySQL:   new BunSQLDriver("mysql://user:pass@localhost:3306/mydb")
+
+const db = new QuickDB({ driver });
+
+await db.init();
+await db.set("test", "Hello World");
+console.log(await db.get("test"));
+
+await db.close(); // disconnect when finished
+```
+
+> `BunSQLDriver` only works under the Bun runtime; under Node it throws a clear error directing you to `PostgresDriver`/`MySQLDriver`.
 
 ### MySQL
 
@@ -210,6 +255,13 @@ npm run lint     # lint the source
 ```
 
 Integration tests for the database drivers use Docker. Bring the test services up with `./deploy-integration-environment.sh`, then run `npm run test:integration`.
+
+The Bun drivers (`BunSqliteDriver`, `BunSQLDriver`) have their own tests that run under the Bun runtime:
+
+```bash
+bun run test:bun              # unit tests (bun:sqlite + Bun.sql in-memory SQLite, no servers)
+bun run test:bun:integration  # BunSQLDriver vs. live Postgres/MySQL (needs the Docker services above)
+```
 
 ## Credits
 
