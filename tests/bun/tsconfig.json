@@ -1,0 +1,17 @@
+{
+    // Bun tests are excluded from the root build config, so without this the
+    // editor type-checks them in an inferred project where `skipLibCheck` is
+    // off, surfacing internal conflicts inside `bun-types`. This project keeps
+    // those files type-checked with the Bun globals and `skipLibCheck` on.
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "../..",
+        "noEmit": true,
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": false,
+        "types": ["bun"]
+    },
+    "include": ["**/*.ts"],
+    "exclude": []
+}
