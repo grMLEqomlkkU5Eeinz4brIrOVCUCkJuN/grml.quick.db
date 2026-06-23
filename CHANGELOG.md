@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [9.1.9] - 2026-06-23
+
+### Bug Fixes
+
+- Added linting and configs for tests
+
+### Features
+
+- Added turso driver
+
+### Miscellaneous Tasks
+
+- Resolved some tsconfig errors
+- Bumped version
+
 ## [9.1.8] - 2026-06-17
 
 ### Bug Fixes
