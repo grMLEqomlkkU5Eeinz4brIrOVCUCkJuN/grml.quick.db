@@ -2,7 +2,9 @@
 // type-only import needs an explicit `resolution-mode` of "import" to resolve
 // its ES module declarations. The runtime value is loaded separately with a
 // dynamic import in `connect()`.
-import type { Client, Config } from "@libsql/client" with { "resolution-mode": "import" };
+import type { Client, Config } from "@libsql/client" with {
+    "resolution-mode": "import",
+};
 
 import { IRemoteDriver } from "../interfaces/IRemoteDriver";
 

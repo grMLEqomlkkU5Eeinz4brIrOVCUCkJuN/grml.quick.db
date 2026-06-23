@@ -1,0 +1,18 @@
+{
+    // Tests are excluded from the root build config, so without this the editor
+    // type-checks them in an inferred project and the typescript-eslint project
+    // service reports them as "not found by the project service". This keeps the
+    // jest tests type-checked without emitting them. The bun tests under `bun/`
+    // have their own config and are excluded here.
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "..",
+        "noEmit": true,
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": false,
+        "types": ["jest", "node"]
+    },
+    "include": ["**/*.ts"],
+    "exclude": ["bun"]
+}
