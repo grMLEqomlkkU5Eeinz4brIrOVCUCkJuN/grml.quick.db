@@ -11,7 +11,7 @@ The original [quick.db](https://github.com/plexidev/quick.db) by [Loren Cerri](h
 ## Features
 
 - **Persistent storage** so your data survives process restarts.
-- **Multiple drivers**: SQLite, MySQL, Postgres, MongoDB, Cassandra, JSON, and in-memory.
+- **Multiple drivers**: SQLite, MySQL, Postgres, Turso/libSQL, MongoDB, Cassandra, JSON, and in-memory.
 - **Works out of the box** with SQLite, with no separate database server to run.
 - **Beginner friendly** with a small, consistent, and well-documented API.
 - **Dot-path access** for reading and writing nested object properties directly.
@@ -32,6 +32,7 @@ Each driver depends on its own database client, which you install separately. On
 | MySQL (Bun)    | (built into Bun, no install)  |
 | Postgres       | `npm i pg`                    |
 | Postgres (Bun) | (built into Bun, no install)  |
+| Turso / libSQL | `npm i @libsql/client`        |
 | MongoDB        | `npm i mongoose`              |
 | Cassandra      | `npm i cassandra-driver`      |
 | JSON           | `npm i write-file-atomic`     |
@@ -176,6 +177,27 @@ const { PostgresDriver } = require("grml.quick.db/PostgresDriver");
     });
 
     const db = new QuickDB({ driver: postgresDriver });
+    await db.init();
+
+    await db.set("userInfo", { difficulty: "Easy" });
+})();
+```
+
+### Turso / libSQL
+
+[Turso](https://turso.tech) is a hosted database built on [libSQL](https://github.com/tursodatabase/libsql), a fork of SQLite. `TursoDriver` connects through the official [`@libsql/client`](https://www.npmjs.com/package/@libsql/client) package. Because libSQL is SQLite-compatible, it uses the same `(ID, json)` table layout as the default SQLite driver. Pass a remote Turso URL with an auth token, or a local `file:` URL for an embedded database.
+
+```js
+const { QuickDB } = require("grml.quick.db");
+const { TursoDriver } = require("grml.quick.db/TursoDriver");
+
+(async () => {
+    const tursoDriver = new TursoDriver({
+        url: "libsql://your-database.turso.io",
+        authToken: "your-auth-token",
+    });
+
+    const db = new QuickDB({ driver: tursoDriver });
     await db.init();
 
     await db.set("userInfo", { difficulty: "Easy" });

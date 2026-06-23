@@ -1,6 +1,7 @@
 import { MySQLDriver } from "../../src/drivers/MySQLDriver";
 import { MongoDriver } from "../../src/drivers/MongoDriver";
 import { PostgresDriver } from "../../src/drivers/PostgresDriver";
+import { TursoDriver } from "../../src/drivers/TursoDriver";
 import { CassandraDriver } from "../../src/drivers/CassandraDriver";
 import { JSONDriver } from "../../src/drivers/JSONDriver";
 import { SqliteDriver } from "../../src/drivers/SqliteDriver";
@@ -48,6 +49,9 @@ const drivers = [
         protocolOptions: {
             port: Number(process.env.CASSANDRA_PORT!),
         },
+    }),
+    new TursoDriver({
+        url: "file:./integration-database/test-turso.db",
     }),
     new JSONDriver("./integration-database/test-driver.json"),
     new SqliteDriver("./integration-database/test-driver.sqlite"),
