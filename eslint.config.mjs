@@ -13,7 +13,11 @@ export default tseslint.config(
     {
         languageOptions: {
             parserOptions: {
-                projectService: true,
+                projectService: {
+                    // Root config files belong to no tsconfig; lint them with
+                    // the default inferred project instead of erroring.
+                    allowDefaultProject: ["*.js", "*.mjs"],
+                },
                 tsconfigRootDir: import.meta.dirname,
             },
         },
