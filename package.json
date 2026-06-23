@@ -1,6 +1,6 @@
 {
     "name": "grml.quick.db",
-    "version": "9.1.8",
+    "version": "9.1.9",
     "description": "A community-maintained fork of quick.db: an easy, non-locking, persistent multi-driver key/value wrapper designed to be simple to set up & use",
     "main": "out/index.js",
     "types": "out/index.d.ts",
